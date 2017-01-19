@@ -1,0 +1,4 @@
+/usr/local/bin/docker-machine --driver oneview  \
+--oneview-server-template "Docker_Template_Humanis" \
+--oneview-os-plans "Docker_Synergy_SY480" \
+docker-engine-001

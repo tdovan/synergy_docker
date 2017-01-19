@@ -1,0 +1,21 @@
+ssh thror
+
+
+0/ cleanup
+rm -Rf /root/.docker/machine/machines/docker-*
+source /home/tdovan/creds.env
+
+1/ Server Provisionning
+source /home/tdovan/creds.env
+. /home/tdovan/creds.env
+export ONEVIEW_ICSP_APIVERSION=200
+export ONEVIEW_OV_APIVERSION=201
+
+
+
+
+/usr/local/bin/docker-machine create \
+--driver oneview  \
+--oneview-server-template "DOCKER_SYNERGY"  \
+--oneview-os-plans "DOCKER_SYNERGY" \
+docker-engine-002

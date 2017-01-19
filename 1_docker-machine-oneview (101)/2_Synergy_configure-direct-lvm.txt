@@ -1,0 +1,55 @@
+https://docs.docker.com/engine/userguide/storagedriver/device-mapper-driver/#configure-direct-lvm-mode-for-production
+
+fdisk -l
+pvcreate /dev/sdb
+vgcreate docker /dev/sdb
+lvcreate --wipesignatures y -n thinpool docker -l 95%VG
+lvcreate --wipesignatures y -n thinpoolmeta docker -l 1%VG
+lvconvert -y --zero n -c 512K --thinpool docker/thinpool --poolmetadata docker/thinpoolmeta
+
+vi /etc/lvm/profile/docker-thinpool.profile
+activation {
+    thin_pool_autoextend_threshold=80
+    thin_pool_autoextend_percent=20
+}
+
+lvchange --metadataprofile docker-thinpool docker/thinpool
+
+lvs -o+seg_monitor
+
+
+### Docker install with direct-lvm
+$ setenforce 0 (optional)
+$ systemctl disable firewalld (optional)
+$ systemctl stop firewalld (optional)
+
+sudo rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
+yum install -y yum-utils
+sudo yum-config-manager --add-repo https://packages.docker.com/1.12/yum/repo/main/centos/7
+sudo yum install -y docker-engine
+
+
+sudo systemctl enable docker.service
+sudo systemctl start docker.service
+sudo docker info
+sudo useradd tdovan
+sudo usermod -a -G docker tdovan
+
+vi /etc/docker/daemon.json
+{
+  "storage-driver": "devicemapper",
+   "storage-opts": [
+     "dm.thinpooldev=/dev/mapper/docker-thinpool",
+     "dm.use_deferred_removal=true",
+     "dm.use_deferred_deletion=true"
+   ]
+}
+
+
+mkdir /var/lib/docker.bk
+mv /var/lib/docker/* /var/lib/docker.bk
+systemctl daemon-reload
+systemctl start docker
+
+journalctl -fu dm-event.service
+ sudo lsblk

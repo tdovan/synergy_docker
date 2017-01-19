@@ -1,0 +1,46 @@
+// install docker-compose
+curl -L "https://github.com/docker/compose/releases/download/1.10.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+(check the latest version https://github.com/docker/compose/releases)
+chmod +x /usr/local/bin/docker-compose
+
+https://hub.docker.com/_/wordpress/
+
+
+// with dab
+docker-compose bundle
+curl -sSL https://experimental.docker.com/builds/$(uname -s)/$(uname -m)/docker-latest.tgz | tar -C ~ -zxf-
+/root/docker/docker stack deploy wordpress
+
+$ ssh 10.12.29.70
+$ docker images ls
+$ docker pull wordpress
+$ docker pull mariadb
+($ docker run --name some-wordpress --link some-mysql:maridb -p 8080:80 -d wordpress)
+
+
+The Compose file is a YAML file defining services, networks and volumes. 
+
+
+// prep for docker-compose car pas de supporté
+docker network create --driver overlay wordpress_outside
+docker network create --driver overlay wordpress_default
+docker volume create --name=wordpress_data
+
+$ cd /root/apps/wordpress
+$ docker-compose up
+http://10.12.29.70:8080
+
+// clean up
+docker volume rm wordpress_data
+docker network rm wordpress_outside
+docker network rm wordpress_default
+
+$ docker network ls
+$ docker network inspect wordpress_default
+
+$ docker volume ls
+$ docker volume inspect 
+
+$ docker down (stop appsonly)
+$ docker stop (remove apps and network)
+
