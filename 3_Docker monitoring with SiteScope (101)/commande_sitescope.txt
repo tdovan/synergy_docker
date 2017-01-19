@@ -1,0 +1,44 @@
+
+// sitescope
+https://hub.docker.com/r/hpsoftware/sitescope/
+https://community.hpe.com/t5/All-About-the-Apps/Dynamic-application-monitoring-with-HPE-SiteScope-up-and-running/ba-p/6852015#.WH6F4FPhBp-
+https://community.hpe.com/t5/All-About-the-Apps/Docker-Monitoring-with-SiteScope-The-complete-picture-with/ba-p/6902343#.WH6F0VPhBp8
+
+
+HPE SiteScope is a web-based monitoring solution that can monitor more than 100 types of IT infrastructure components such as servers, operating systems, network devices, network services, applications, and application components. SiteScope is an agentless monitoring solution that can be deployed quickly and efficiently from a central server without having to install and maintain agents on each server.
+
+
+docker run -d -p 8080:8080 -p 8888:8888 --name hpe_sitescope hpsoftware/sitescope:latest
+http://10.12.20.82:8080/SiteScope
+New moniteur gror.iss.democenter.lan
+Docker / port 2376
+Activer Connexion secure
+Freq mise à jour 30s
+Param d'exex du monitor: 30s
+certif tdovan.pfx
+Preferer TLS à SSL
+
+
+
+
+Dynamic Docker Monitor Enhancements
+l Ability to monitor all containers including containers that are not running currently.
+l The following new additional counters are introduced:
+New counters for all containers:
+o State
+o Availability
+New counters for running containers:
+o network usage received (bytes)
+o network usage transmitted (bytes)
+o disk usage I/O read (bytes)
+o disk usage I/O read count
+o disk usage I/O write (bytes)
+o disk usage I/O write count
+• Performance improvements to allow monitoring of Docker containers at a higher frequency of one minute
+(from the earlier 3 minutes).
+
+https://community.hpe.com/t5/All-About-the-Apps/SiteScope-Docker-Monitor-Monitoring-Oracle-database-Container/ba-p/6916178#.WH6FuFPhBp9
+
+copy certification
+$ openssl pkcs12 -inkey key.pem -in cert.pem -export -out tdovan.pfx
+$ docker cp tdovan.pfx e4f676c00782:/opt/HP/SiteScope/templates.certificates

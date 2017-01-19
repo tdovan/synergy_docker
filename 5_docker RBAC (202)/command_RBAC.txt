@@ -1,0 +1,20 @@
+https://docs.docker.com/datacenter/ucp/2.0/guides/access-ucp/cli-based-access/
+
+
+$ unzip ucp-bundle-dave.lauper.zip
+$ cd ucp-bundle-dave.lauper
+$ eval $(<env.sh)
+
+cd /home/tdovan/demo/5_docker_RBAC/ucp-bundle-usera/
+eval $(<env.sh)
+
+cd /home/tdovan/demo/5_docker_RBAC/ucp-bundle-userb/
+eval $(<env.sh)
+
+cd /home/tdovan/demo/5_docker_RBAC/ucp-bundle-tdovan/
+eval $(<env.sh)
+
+
+eval $(</home/tdovan/demo/5_docker/ucp-bundle-usera/env.sh)
+eval $(</home/tdovan/demo/5_docker/ucp-bundle-userb/env.sh)
+eval $(</home/tdovan/demo/5_docker/ucp-bundle-tdovan/env.sh)

@@ -1,0 +1,11 @@
+https://www.youtube.com/watch?v=a7qZF8i5EYg&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd&index=24
+
+node mgmt
+swarmKit allors to change (almost) eveerything on-the-fly
+nothign should require a full restart
+
+Node availability
+docker node update <node-name> --availability <active|pause|drain>
+
+node promote / demote
+to remove node: swarm leave (drain the containers)

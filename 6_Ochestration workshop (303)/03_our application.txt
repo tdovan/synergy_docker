@@ -1,0 +1,98 @@
+https://www.youtube.com/watch?v=-L6FU7nAj2w&index=3&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd
+https://github.com/jpetazzo/orchestration-workshop/
+
+git clone https://github.com/jpetazzo/orchestration-workshop.git
+ssh synergy node
+
+cd /root/git/orchestration-workshop/dockercoins
+cd /root/git/orchestration-workshop/hpesynergy
+docker-compose up
+> explain rng / hasher / webui
+
+docker-compose up -d
+> explain
+docker-compose ps
+> webui is listening on 8000
+http://10.12.25.151:8000
+http://10.12.25.151:8000/json
+docker-compose logs
+docker-compose logs --tail 1 --follow
+
+https://twitter.com/tan_dovan
+
+// tuning app
+top
+free
+vmstat 3
+
+docker-compose scale worker=2
+docker-compose scale worker=10
+docker-compose scale worker=20
+> no more than 10 hashes...
+> what is the bottleneck ??
+
+use ab (apache bench) and httping
+yum install httpd-tools (for ab)
+wget ftp://195.220.108.108/linux/centos/7.3.1611/os/x86_64/Packages/fftw-libs-double-3.3.3-8.el7.i686.rpm
+wget http://ftp.tu-chemnitz.de/pub/linux/dag/redhat/el7/en/x86_64/rpmforge/RPMS/httping-2.3.4-1.el7.rf.x86_64.rpm
+
+// check the services ports
+check latency of rng
+http://localhost:8001
+ab -n 10 -c 10 http://10.12.25.151:8001/
+
+check latency of hasher
+ab -n 10 -c 10 http://10.12.25.151:8001/
+
+check latency of webui
+ab -n 10 -c 10 http://10.12.25.151:8000/
+
+> rng is slower.. but why entropy or /dev/urandom ??
+
+docker-compose stop (sigterm properly)
+docker-compose kill (kill)
+docker-compose down (stop container + remove ressrouce (network..)
+
+### STOP HERE ####################################################################################################################
+
+
+
+/// tuning app
+compare hasher and rng
+vim hasher/hasher.rb
+vim rng/rng.py
+vim worker/worker.py
+
+> diff are because of the framework (ryby vs python)
+
+// rolling update
+docker-compose ps
+docker-compose scale worker=10
+
+> check ui and nb of hasher
+vim worker/worker.py
+<    time.sleep(0.1)
+>    time.sleep(0.01)
+
+mkdir /etc/docker/certs.d/
+curl -k https://10.12.20.84/ca -o /etc/docker/certs.d/10.12.20.84.crt
+curl -k https://10.12.20.84/ca -o /etc/pki/ca-trust/source/anchors/10.12.20.84.crt
+sudo update-ca-trust
+sudo systemctl daemon-reload
+sudo /bin/systemctl restart docker.service
+
+export DOMAIN_NAME=10.12.20.84
+openssl s_client -connect $DOMAIN_NAME:443 -showcerts </dev/null 2>/dev/null | openssl x509 -outform PEM | tee /etc/pki/ca-trust/source/anchors/$DOMAIN_NAME.crt
+update-ca-trust
+/bin/systemctl restart docker.service
+docker login 10.12.20.84
+docker build -t 10.12.20.84:5000/worker:v0.01 worker/
+docker push 10.12.20.84:5000/worker:v0.01 
+docker push hub.docker.com:5000/worker:v0.01 
+
+
+watch -n1 "docker service ps worker | grep -v Shutdown.*Shutdown"
+watch -n1 "docker ps worker | grep -v Shutdown.*Shutdown"
+
+
+vim worker/worker.py

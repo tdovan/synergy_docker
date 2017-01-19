@@ -1,0 +1,67 @@
+https://www.youtube.com/watch?v=8X1ZpekUg5A&index=19&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd#t=1119.174881
+// GROR for this demo
+
+prereq:
+- make sure data file are on a volume
+- volume are host directory mounter to a container fs
+- volume are distributed (NFS, EBS volume, Ceph, Gluster..) if yo uloos node, still ok to restart the container to reattach the volume vs local volume
+
+// start redis use GROR for this demo
+ssh gror (10.12.20.82)
+docker service ps redis_stateful
+start redis and expose port 
+docker service create --name redis_stateful --publish 10000:6379 redis
+docker run --rm redis redis-cli -h 10.12.20.82 -p 10000 info server (check server health)
+alias redis='docker run --rm redis redis-cli -h 10.12.20.82 -p 10000'
+redis info server
+
+// set add on db and check
+alias redis='docker run --rm redis redis-cli -h 10.12.20.82 -p 10000'
+redis get foo
+redis set foo bar
+redis get foo
+
+// comp volume local vs global
+GLOBAL
+- global exist in a single namespace
+- global vol can be mounted on any node
+- attach to start a global volume to a container anywhere
+LOCAL for particular reason (trad apps migration with cluster constraint)
+- local vol is on one node only > use constraint
+
+
+// check if data are persistent - issue on some image
+docker ps (check redis)
+docker restart cd70c3732bd9
+docker service update redis_stateful --constraint-add node.hostname==gror.iss.democenter.lan
+docker service ps redis_stateful
+
+// show volume change docker volume
+docker volume ls
+docker service update redis_stateful --limit-memory=100M
+
+// change volume ano of the service w/ specific volume and keep it accorss restart
+docker service update redis_stateful \
+--constraint-add node.hostname==gror.iss.democenter.lan \
+--args "--appendonly yes" \
+--mount-add type=volume,source=foobarstore,target=/data
+3 types of volume normal (local/flocker,port..), bind mount or normal FS mount
+
+docker volume ls
+redis get foo
+redis set foo bar
+redis get foo
+docker service update redis_stateful --limit-memory=200M
+redis get foo
+redis set foo bar
+redis get foo
+
+// show how to use this local volume w. other container
+docker run -ti -v foobarstore:/mount alpine sh
+cd mount/
+ls
+
+// conclusion for stateful
+- service must write to disk before shutdown (SIGTERM)
+- data are wrtien on a persistent local volume (source=foobarstore)
+- containers start on specific host (--constraint-add node.hostname)

@@ -1,0 +1,34 @@
+https://www.youtube.com/watch?v=YJAyWDHRMkQ&index=19&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd
+
+
+ssh gror.iss.democenter.lan
+ssh dwalin
+// create the network overlay for logging
+docker network create logging --driver overlay
+
+// create the 3 services and add them to the network
+docker service create --network logging --name elasticsearch elasticsearch
+docker service create --network logging --name kibana -e ELASTICSEARCH_URL=http://elasticsearch:9200 --publish 5601:5601 kibana
+docker service create --network logging --name logstash --publish 12201:12201/udp logstash -e "$(cat /home/tdovan/git/orchestration-workshop/elk/logstash.conf)"
+
+
+// check the logs RT in the logstash container
+ssh gror.iss.democenter.lan
+docker service ps logstash
+docker logs --follow 7a59e5a6a550
+
+docker logs --follow 7a59e5a6a550
+docker logs --follow 7a59e5a6a550 --tail 1 --follow
+
+
+
+// show log from a container/applications
+docker run --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201 --rm alpine echo hello
+
+// show log from a service
+docker service create --restart-condition none --log-driver gelf --log-opt gelf-address=udp://127.0.0.1:12201 alpine echo hello from a service
+
+// use Kibana UI to see the message
+http://10.12.20.81:5601 (use any adress because its a service available on all node - mesh routing)
+
+http://10.12.20.81:5601/app/kibana#/discover?_g=()&_a=(columns:!(_source),index:'logstash-*',interval:auto,query:(query_string:(analyze_wildcard:!t,query:'*')),sort:!('@timestamp',desc))

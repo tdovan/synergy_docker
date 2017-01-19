@@ -1,0 +1,21 @@
+https://www.youtube.com/watch?v=bSoSDYF9pE8&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd&index=21
+
+>> How to automate a whole process to build ship and run
+
+versio 2: use build and image
+version "2"
+
+services:
+ webapp:
+	build: src/
+	image tdovan/webapp:${TAG}
+
+
+
+use variable
+REGISTRY=localost:5000
+TAG=v0.1
+
+then use simply:
+docker build
+docker push

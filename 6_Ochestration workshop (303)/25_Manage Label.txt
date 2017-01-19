@@ -1,0 +1,1 @@
+docker node update --label-add foo --label-add bar docker01-synergy.iss.democenter.lan

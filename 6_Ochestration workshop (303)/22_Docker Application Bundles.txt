@@ -1,0 +1,23 @@
+https://www.youtube.com/watch?v=dVlY1n_5PDo&list=PLBAFXs0YjviIZOSpQQkRe8F6les1wwaxd&index=22
+
+Like compose file but for swarm cluster
+yaml, JSON payload
+stared as <application>.dab
+
+docker-compose bundle
+
+
+docker stack deploy dockercoins
+
+master branch: curl -sSL \
+experimental 	curl -sSL https://experimental.docker.com/builds/$(uname -s)/$(uname -m)/docker-latest.tgz | tar -C ~ -zxf-
+GA		curl -sSL https://get.docker.com/builds/$(uname -s)/$(uname -m)/docker-latest.tgz | tar -C ~ -zxf-
+RC		curl -sSL https://test.docker.com/builds/$(uname -s)/$(uname -m)/docker-latest.tgz | tar -C ~ -zxf-
+
+
+
+> GOALs
+all ressource are prefix with name
+no conflict with mulitple deployement
+
+

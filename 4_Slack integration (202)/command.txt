@@ -1,0 +1,7 @@
+https://hpe-docker.slack.com/services/129688521862?updated=1
+https://hub.docker.com/r/xvir/api-ai-slack-bot/
+
+API Token	xoxb-128288555328-RmPEroJeDflAhEXGPojVyUf6
+Custo Name	@docker_synergy
+
+hpe-docker

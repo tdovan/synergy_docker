@@ -1,0 +1,10 @@
+linux.. all is good
+putty, gitbash, MobaXtErm
+
+account github, gitter, docker hub
+
+http://view.dckr.info/
+
+tmux
+
+
